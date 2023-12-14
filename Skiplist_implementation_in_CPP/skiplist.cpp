@@ -56,7 +56,12 @@ public:
         }
         (*(this->next)).freeSLL();
         delete this;
+
+
         return;
+    }
+    ~Node(){
+        std::cout << "Node with data " << this->data << " is deleted" << std::endl;
     }
 
 };
@@ -71,7 +76,7 @@ public:
     skiplist(int maxLevel , Node *head){
         this->maxLevel = maxLevel;
         // this->size = 0;
-        Node *newNode = new Node(std::numeric_limits<int>::min(), NULL, NULL);
+        Node *newNode = new Node(std::numeric_limits<int>::min(), head, NULL);
         levels.push_back(newNode);
         for (int i = 1; i < maxLevel; i++){
             Node *newNode = new Node(std::numeric_limits<int>::min(), NULL, NULL);
@@ -95,6 +100,8 @@ public:
                 temp->setnext(newNode);
                 temp = temp->getNext();
             }
+            
+            
         }
 
         
@@ -102,7 +109,20 @@ public:
 
     ~skiplist(){
         for (int i = 0; i < maxLevel; i++){
-            (*(levels[i])).freeSLL();
+            (levels[i]) -> freeSLL();
+        }
+        std::cout << "Skiplist is deleted" << std::endl;
+
+    }
+
+    void print(){
+        for (int i = 0; i < maxLevel; i++){
+            Node *temp = levels[i];
+            while(temp != NULL){
+                std::cout << temp->getData() << " ";
+                temp = temp->getNext();
+            }
+            std::cout << std::endl;
         }
     }
 
@@ -111,18 +131,28 @@ public:
 
 int main(){
 
+    int len = 25;
+
+    int *num = new int[len];
+
+    for (int i = 0; i < len; i++)
+    {
+        num[i] = i;
+    }
+
     Node *head = new Node(1, NULL, NULL);
-    Node *newNode = new Node(2, NULL, NULL);
-    (*head).append(newNode);
-    newNode = new Node(3, NULL, NULL);
-    (*head).append(newNode);
-    newNode = new Node(4, NULL, NULL);
-    (*head).append(newNode);
-    newNode = new Node(5, NULL, NULL);
-    (*head).append(newNode);
-    newNode = new Node(6, NULL, NULL);
-    (*head).append(newNode);
-    skiplist *sl = new skiplist(3 , head);
+    Node *newNode;
+
+    for (int i = 1; i < len; i++)
+    {
+        newNode = new Node(num[i], NULL, NULL);
+        (*head).append(newNode);
+    }
+    // head -> freeSLL();
+
+    
+    skiplist *sl = new skiplist(4 , head);
+    sl -> print();
     (*sl).~skiplist();
 
     return 0;
