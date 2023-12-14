@@ -1,6 +1,7 @@
 #include<iostream>
 #include<vector>
 #include <limits>
+#include <cstdlib> 
 
 class Node
 {
@@ -24,19 +25,22 @@ public:
     Node *getDown(){
         return this->down;
     }
+    void setnext(Node *next){
+        this->next = next;
+    }
     void setData(int data, Node *next, Node *down){
         this->data = data;
         this->next = next;
         this->down = down;
     }
-    void append(int data){
+    void append(Node *node){
         Node *temp = this;
         while(temp->next != NULL){
             temp = temp->next;
         }        
-        Node *newNode = new Node(data, NULL, NULL);
+        // Node *newNode = new Node(data, NULL, NULL);
         // newNode->setData;
-        temp -> next = newNode;
+        temp -> next = node;
     }
     void appendDown(int data){
         Node *temp = this;
@@ -61,8 +65,9 @@ public:
 class skiplist
 {
 private:
-    std::vector<Node *> levels;
+int maxLevel;
     int maxLevel;
+    std::vector<Node *> levels;
 
 public:
     skiplist(int maxLevel , Node *head){
@@ -75,17 +80,27 @@ public:
             // Node *newNode = new Node(std::numeric_limits<int>::min(), NULL, NULL);
             levels.push_back(newNode);
         }
-
-
+        for (int i = 0; i < maxLevel-1; i++)
+        {
+            skipify(levels[i], levels[i+1]);
+        }
+        
 
     }
-    
-    // ~skiplist(){
-    //     for (int i = 0; i < maxLevel; i++){
-    //         (*(levels[i])).freeSLL();
-    //     }
-    //     free(this);
-    // }
+
+    void skipify(Node * bottom , Node * top){
+        Node *temp = top;
+        Node *bottomTemp = bottom;
+        bottomTemp = bottomTemp->getNext();
+        for (; bottomTemp != NULL; bottomTemp = bottomTemp->getNext()){
+            Node *newNode = new Node(bottomTemp->getData(), NULL, bottomTemp);
+            temp->setnext(newNode);
+            temp = temp->getNext();
+        }
+
+        
+    }
+
 
 };
 
@@ -101,15 +116,13 @@ int main(){
     // Node *head = new Node :: Node((1, NULL, NULL));
     Node *head = new Node(1, NULL, NULL);
 
-    
-    // (*head).setData(1, NULL, NULL);
-    (*head).append(2);
-    // (*head).append(3);
-    // (*head).append(4);
-    // (*head).append(5);
-    // (*head).~Node();
+    Node *newNode = new Node(2, NULL, NULL);
+    (*head).append(newNode);
 
-    skiplist *sl = new skiplist(5 , head);
+    Node *newNode = new Node(3, NULL, NULL);
+    (*head).append(newNode);
+
+    skiplist *sl = new skiplist(3 , head);
     // sl->~skiplist();
 
 
