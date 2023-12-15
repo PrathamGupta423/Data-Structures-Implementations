@@ -1,17 +1,14 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <vector>
 #include <limits>
 #include <cstdlib> 
 #include <ctime>
-
-
-class Node
-{
+#include <bits/stdc++.h>
+class Node{
 private:
     int data;
     Node *next;
     Node *down;
-
 public:
     Node(int data, Node *next, Node *down){
         this->data = data;
@@ -29,6 +26,9 @@ public:
     }
     void setnext(Node *next){
         this->next = next;
+    }
+    void setDown(Node *down){
+        this->down = down;
     }
     void setData(int data, Node *next, Node *down){
         this->data = data;
@@ -63,7 +63,6 @@ public:
         return;
     }
     ~Node(){
-        // std::cout << "Node with data " << this->data << " is deleted" << std::endl;
     }
     int getindex(int n){
         Node *temp = this;
@@ -87,18 +86,14 @@ public:
         }
         return temp;
     }
-
 };
-class skiplist
-{
+class skiplist{
 private:
     int maxLevel;
     std::vector<Node *> levels;
-
 public:
     skiplist(int maxLevel , Node *head){
         this->maxLevel = maxLevel;
-        // this->size = 0;
         Node *newNode = new Node(std::numeric_limits<int>::min(), head, NULL);
         levels.push_back(newNode);
         for (int i = 1; i < maxLevel; i++){
@@ -112,7 +107,6 @@ public:
         
 
     }
-
     void skipify(Node * bottom , Node * top){
         Node *temp = top;
         Node *bottomTemp = bottom;
@@ -128,14 +122,12 @@ public:
             }
         }
     }
-
     ~skiplist(){
         for (int i = 0; i < maxLevel; i++){
             (levels[i]) -> freeSLL();
         }
         std::cout << "Skiplist is deleted" << std::endl;
     }
-
     void print(){
         for (int i = 0; i < maxLevel; i++){
             Node *temp = levels[i];
@@ -148,16 +140,11 @@ public:
     }
     Node* search(int key){
         Node *temp = levels[maxLevel-1];
-        // std::cout<<"searching"<<temp->getData()<<std::endl;
-        // return temp -> getNext();
         while(temp->getNext()!= NULL or temp->getDown() != NULL){
-            // std::cout<<"in loop"<<temp->getData()<<std::endl;
             if (temp->getData() == key){
                 return temp ->bottomMost();
-                // std::cout<<"1st if"<<temp->getData()<<std::endl;
             }
             else if (temp->getData() < key){
-                // std::cout<<"in else"<<temp->getData()<<std::endl;
                 if (temp->getNext() != NULL){
                     if (temp -> getNext() -> getData() <= key)
                     {
@@ -183,12 +170,67 @@ public:
         }
         return NULL;
     }
-    
+    void insert(int key){
+        std::vector<Node *> path;
+        std::vector<Node *> pathDown;
+        Node *temp = levels[maxLevel-1];
+        while (true){
+            if (temp->getNext() != NULL){
+                if(temp -> getNext() -> getData() < key){
+                    temp = temp -> getNext();
+                }
+                else if (temp -> getNext() -> getData() == key){
+                    return;
+                }
+                else{
+                    path.push_back(temp);
+                    // pathDown.push_back(temp);
+                    temp = temp -> getDown();
+                }
+            }
+            else if (temp -> getDown() != NULL){
+                path.push_back(temp);
+                // pathDown.push_back(temp);
+                temp = temp -> getDown();
+            }
+            else{
+                path.push_back(temp);
+                // pathDown.push_back(temp);
+                break;
+            }
+        }
 
-
+        Node *newNode = new Node(key, NULL, NULL);
+        Node *prev = NULL;
+        std::reverse(path.begin(), path.end());
+        for (int i = 0; i < path.size(); i++){
+            if (i == 0){
+                newNode -> setnext(path[i] -> getNext());
+                path[i] -> setnext(newNode);
+                prev = newNode;
+            }
+            else{
+                
+                if (rand() % 2 == 0)
+                {
+                    Node *newNode2 = new Node(key, NULL, NULL);
+                    newNode2 -> setnext(path[i] -> getNext());
+                    path[i] -> setnext(newNode2);
+                    newNode2 -> setDown(prev);
+                    prev = newNode2;
+                }
+                else{
+                    return;
+                }
+            }
+        
+        }
+        return;
+    }        
 };
-int main(){
-    srand(time(NULL));
+
+void searchtest(){
+    
     int len = 1000;
     int *num = new int[len];
     for (int i = 0; i < len; i++)
@@ -216,11 +258,35 @@ int main(){
         std::cout<<"found"<<std::endl;
     }
 
-    // std::cout<<"searched"<<" "<<b -> getData()<<std::endl;
-    // delete b;
-
     delete sl;
 
+}
 
+void inserttest(){
+    int num[] = {0,1,2,3,4,5,7,8,9,10};
+    Node *head = new Node(0, NULL, NULL);
+    Node *newNode;
+    for (int i = 1; i < 9; i++)
+    {
+        newNode = new Node(num[i], NULL, NULL);
+        (*head).append(newNode);
+    }
+
+    // free(num);
+
+    skiplist *sl = new skiplist(3, head);
+    sl -> print();
+    sl -> insert(6);
+    sl -> print();
+    delete sl;
+}
+
+int main(){
+    srand(time(NULL));
+
+    // searchtest();
+
+    inserttest();
+    
     return 0;
 }
