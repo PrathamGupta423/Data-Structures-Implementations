@@ -172,7 +172,6 @@ public:
     }
     void insert(int key){
         std::vector<Node *> path;
-        std::vector<Node *> pathDown;
         Node *temp = levels[maxLevel-1];
         while (true){
             if (temp->getNext() != NULL){
@@ -184,18 +183,20 @@ public:
                 }
                 else{
                     path.push_back(temp);
-                    // pathDown.push_back(temp);
+                    if(temp -> getDown() != NULL){
                     temp = temp -> getDown();
+                    }
+                    else{
+                        break;
+                    }
                 }
             }
             else if (temp -> getDown() != NULL){
                 path.push_back(temp);
-                // pathDown.push_back(temp);
                 temp = temp -> getDown();
             }
             else{
                 path.push_back(temp);
-                // pathDown.push_back(temp);
                 break;
             }
         }
@@ -263,21 +264,24 @@ void searchtest(){
 }
 
 void inserttest(){
-    int num[] = {0,1,2,3,4,5,7,8,9,10};
+    int len = 49;
+    int num[] = {21, 41, 54, 58, 72, 79, 83, 86, 102, 157, 197, 219, 231, 251, 261, 292, 307, 338, 383, 398, 416, 435, 456, 504, 512, 582, 585, 610, 642, 710, 741, 758, 766, 784, 789, 799, 800, 834, 839, 852, 862, 890, 893, 916, 927, 942, 958, 970, 1000};
     Node *head = new Node(0, NULL, NULL);
     Node *newNode;
-    for (int i = 1; i < 9; i++)
-    {
+    for (int i = 1; i < len; i++){
         newNode = new Node(num[i], NULL, NULL);
         (*head).append(newNode);
     }
 
-    // free(num);
-
-    skiplist *sl = new skiplist(3, head);
+    skiplist *sl = new skiplist(4, head);
     sl -> print();
-    sl -> insert(6);
+    std::cout << "----------------------------------------------------"<< std::endl;
+    sl -> insert(43);
     sl -> print();
+    std::cout << "----------------------------------------------------"<< std::endl;
+    sl -> insert(103);
+    sl -> print();
+    std::cout << "----------------------------------------------------"<< std::endl;
     delete sl;
 }
 
