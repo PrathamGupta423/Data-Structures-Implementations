@@ -3,6 +3,7 @@
 #include<limits>
 #include <utility>
 #include <tuple>
+#include <algorithm>
 
 // creating graph using adjacency matrix
 class Graph{
@@ -43,8 +44,6 @@ class Graph{
             std::cout << "Graph deleted" << std::endl;
         }
 };
-
-
 class TreeNode{
     private:
         std::vector<std::pair<int , int>> path;
@@ -252,23 +251,14 @@ void TSP(float **adj, int V){
     }
     // root->print();
     // In the children of root we find that node with minimum cost and we branch out from there
-    float min = std::numeric_limits<float>::infinity();
-    int min_index = -1;
-    for (int i = 0; i < (root->getChildren()).size(); i++)
-    {
-        if((root->getChildren())[i]->getcost() < min){
-            min = (root->getChildren())[i]->getcost();
-            min_index = i;
-        }
-    }
-    std::cout << "min: " << min << std::endl;
-    std::cout << "min_index: " << min_index << std::endl;
-
-
-
-
+    
     delete root;
 }
+
+
+
+
+
 
 TreeNode* Find_Min_cost_in_full_tree(TreeNode* root){
     if((root->getChildren()).size() == 0){
@@ -288,6 +278,38 @@ TreeNode* Find_Min_cost_in_full_tree(TreeNode* root){
         }
     }
     return minNode;
+}
+bool isin(std::vector<int> vertexs, int node){
+    for (int i = 0; i < vertexs.size(); i++)
+    {
+        if(vertexs[i] == node){
+            return true;
+        }
+    }
+    return false;
+}
+int branchForNode(float **adj, int V, TreeNode* node , std::vector<int>* vertexs) {
+    std::vector<std::pair<int , int>> path = node->getpath();
+    std::vector<int> visited = {};
+    for (int i = 0; i < path.size(); i++)
+    {
+        visited.push_back(path[i].first);
+        visited.push_back(path[i].second);
+    }
+    int did_anything_happen = 0;
+    for (int i = 0; i < V; i++)
+    {
+        if(!isin(visited, i)){
+            std::vector<std::pair<int , int>> temp_path = path;
+            temp_path.push_back({path[path.size()-1].second, i});
+            TreeNode* temp = new TreeNode(temp_path, lowerBoundCost(adj, V, temp_path), node->getDepth()+1);
+            node->addChild(temp);
+            did_anything_happen = 1;
+        }
+    }
+
+    return did_anything_happen;
+
 }
 
 // void TSP(float **adj, int V){
