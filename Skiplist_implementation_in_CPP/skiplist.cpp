@@ -236,8 +236,10 @@ void searchtest(){
     int *num = new int[len];
     for (int i = 0; i < len; i++)
     {
-        num[i] = i;
+        num[i] = 2*i;
     }
+    std::cout << "The skip list contains {0,2,4,...,1998} " << std::endl;
+    std::cout << "----------------------------------------------------"<< std::endl;
     Node *head = new Node(0, NULL, NULL);
     Node *newNode;
     for (int i = 1; i < len; i++)
@@ -250,8 +252,14 @@ void searchtest(){
 
     
     skiplist *sl = new skiplist(20, head);
+
+
+    std::cout << "The skip list is " << std::endl;
     sl -> print();
-    Node* b = sl -> search(101);
+    std::cout << "----------------------------------------------------"<< std::endl;
+
+    std::cout << "Searching for 100" << std::endl;
+    Node* b = sl -> search(100);
     if (b == NULL){
         std::cout<<"not found"<<std::endl;
     }
@@ -260,6 +268,8 @@ void searchtest(){
     }
 
     delete sl;
+    std::cout << "========================================================" << std::endl;
+    
 
 }
 
@@ -274,11 +284,14 @@ void inserttest(){
     }
 
     skiplist *sl = new skiplist(4, head);
+    std::cout << "The skip list is " << std::endl;
     sl -> print();
     std::cout << "----------------------------------------------------"<< std::endl;
+    std::cout << "Inserting 43" << std::endl;
     sl -> insert(43);
     sl -> print();
     std::cout << "----------------------------------------------------"<< std::endl;
+    std::cout << "Inserting 103" << std::endl;
     sl -> insert(103);
     sl -> print();
     std::cout << "----------------------------------------------------"<< std::endl;
@@ -288,7 +301,7 @@ void inserttest(){
 int main(){
     srand(time(NULL));
 
-    // searchtest();
+    searchtest();
 
     inserttest();
     

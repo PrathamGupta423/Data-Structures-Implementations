@@ -230,36 +230,6 @@ float lowerBoundCost(float **adj, int V, std::vector<std::pair<int , int>>path= 
     return cost;
 }
 
-void TSP(float **adj, int V){
-    
-    std::vector<int> vertexs ;
-    for (int i = 0; i < V; i++)
-    {
-        vertexs.push_back(i);
-    }
-    
-    float upper_bound = std::numeric_limits<float>::infinity();
-
-    std::vector<std::pair<int , int>> currentpath = {};
-    TreeNode* root = new TreeNode({}, lowerBoundCost(adj, V) , 0);
-    TreeNode* temp;
-    std::vector<std::pair<int , int>> temp_path = {};
-    for (int i = 1; i < V; i++)
-    {   
-        temp = new TreeNode({{0,i}}, lowerBoundCost(adj, V, {{0,i}}), {} , 1);
-        root->addChild(temp);
-    }
-    // root->print();
-    // In the children of root we find that node with minimum cost and we branch out from there
-    
-    delete root;
-}
-
-
-
-
-
-
 TreeNode* Find_Min_cost_in_full_tree(TreeNode* root){
     if((root->getChildren()).size() == 0){
         return root;
@@ -277,6 +247,7 @@ TreeNode* Find_Min_cost_in_full_tree(TreeNode* root){
             minDepth = minChild->getDepth();
         }
     }
+    std::cout << "minNode->getDepth(): " << minNode->getDepth() << std::endl;
     return minNode;
 }
 bool isin(std::vector<int> vertexs, int node){
@@ -312,57 +283,51 @@ int branchForNode(float **adj, int V, TreeNode* node , std::vector<int>* vertexs
 
 }
 
-// void TSP(float **adj, int V){
-//     std::vector<int> path;
-//     float upper_bound = std::numeric_limits<float>::infinity();
-//     std::vector<std::vector<std::pair < std::vector<int> ,float>>> level_by_level_lower_bounds = {};
-//     std::vector<std::pair < std::vector<int> ,float>> temp_lower_bounds = {};
-//     // For sake of generality let us assume that the starting node is 0
-//     for (int i = 1; i < V; i++)
-//     {
-//         // checking in all branches of the tree starting from 0 
-//         std::cout << "i: " << i << std::endl;
-//         std::vector<std::pair<int , int>>path = {{0,i}};
-//         float lower_bound = lowerBoundCost(adj, V, path);
-//         std::cout << "lower_bound: " << lower_bound << std::endl;
-//         std::vector<int> temp_path = {0,i};
-//         temp_lower_bounds.push_back(std::make_pair(temp_path, lower_bound));
-//     }
-//     level_by_level_lower_bounds.push_back(temp_lower_bounds);
-//     temp_lower_bounds.clear();
-//     std::cout << "level_by_level_lower_bounds: " << std::endl;
-//     printlevel_by_level_lower_bounds(level_by_level_lower_bounds);
-// 
-//     float min = std::numeric_limits<float>::infinity();
-//     int min_index = -1;
-//     for (int i = 0; i < level_by_level_lower_bounds[0].size(); i++)
-//     {
-//         if(level_by_level_lower_bounds[0][i].second < min){
-//             min = level_by_level_lower_bounds[0][i].second;
-//             min_index = i;
-//         }
-//     }
-//     std::cout << "min: " << min << std::endl;
-//     std::cout << "min_index: " << min_index << std::endl;
-// 
-//     while (true)
-//     {
-        // 
-//     }
-    // 
-    // 
-// 
-//     // return path;
+void TSP(float **adj, int V){
+    
+    std::vector<int> vertexs ;
+    for (int i = 0; i < V; i++)
+    {
+        vertexs.push_back(i);
+    }
+    
+    float upper_bound = std::numeric_limits<float>::infinity();
 
-// }
-// 
-// void branchify(float **adj, int V, int curr_pos){
-//     std::vector<std::pair<int , int>>path = {{0,i}};
-//     float lower_bound = lowerBoundCost(adj, V, path);
-//     std::cout << "lower_bound: " << lower_bound << std::endl;
-//     temp_lower_bounds.push_back(std::make_pair(i, lower_bound));
-    // 
-// }
+    std::vector<std::pair<int , int>> currentpath = {};
+    TreeNode* root = new TreeNode({}, lowerBoundCost(adj, V) , 0);
+    TreeNode* temp;
+    std::vector<std::pair<int , int>> temp_path = {};
+    for (int i = 1; i < V; i++)
+    {   
+        temp = new TreeNode({{0,i}}, lowerBoundCost(adj, V, {{0,i}}), {} , 1);
+        root->addChild(temp);
+    }
+    // root->print();
+    // In the children of root we find that node with minimum cost and we branch out from there
+
+    while (upper_bound == std::numeric_limits<float>::infinity())
+    {
+        std :: cout << "upper_bound: " << upper_bound << std::endl;
+        std :: cout << "root->getDepth(): " << root->getDepth() << std::endl;
+        TreeNode* minNode = Find_Min_cost_in_full_tree(root);
+        // minNode->print();
+        // std::cout << "minNode->getDepth(): " << minNode->getDepth() << std::endl;
+        // std::cout << "minNode->getcost(): " << minNode->getcost() << std::endl;
+        // std::cout << "upper_bound: " << upper_bound << std::endl;
+        if(minNode->getDepth() == V-1){
+            upper_bound = minNode->getcost();
+            std::cout << "upper_bound: " << upper_bound << std::endl;
+            break;
+            // root->print();
+        }
+        else{
+            branchForNode(adj, V, minNode, &vertexs);
+        }
+    }
+    
+    delete root;
+}
+
 
 int main(){
 
@@ -378,12 +343,11 @@ int main(){
     g -> addEdge(2,4,8);
     g -> addEdge(3,4,6);
     g -> printGraph();  
-    // std::cout <<lowerBoundCost(g->adj, g->V)<<std::endl;
-    // std::vector< std::pair <int,int>> path = {{0,2},{0,4}};
-    // std::cout <<lowerBoundCost(g->adj, g->V, path)<<std::endl;
+    std::cout <<lowerBoundCost(g->adj, g->V)<<std::endl;
+    std::vector< std::pair <int,int>> path = {{0,2},{0,4}};
+    std::cout <<lowerBoundCost(g->adj, g->V, path)<<std::endl;
     // std::cout << "Path: " << std::endl;
     // printPath(path);
-
     TSP(g->adj, g->V);
 
 
