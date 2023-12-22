@@ -4,7 +4,6 @@
 #include <utility>
 #include <tuple>
 #include <algorithm>
-
 // creating a graph with adjacency matrix
 class Graph
 {
@@ -203,7 +202,6 @@ float pathCost(float **adj, int V, std::vector<std::pair<int , int>>path){
     {
         cost += adj[path[i].first][path[i].second];
     }
-    // also adding the return 
     cost += adj[path[path.size()-1].second][path[0].first];
     return cost;
 }
@@ -251,7 +249,6 @@ void TSP(float **adj, int V){
 
     TSPRecursion(V ,adj, Lower_Bound, 1, current_path , &best_path, &best_cost, visited);
 
-    // return new Path(best_path, best_cost);
     std::cout << "best_cost: " << best_cost << std::endl;
     std::cout << "best_path: " << std::endl;
     for (int i = 0; i < best_path.size(); i++)
@@ -275,21 +272,28 @@ int main(){
     g -> addEdge(2,3,5);
     g -> addEdge(2,4,8);
     g -> addEdge(3,4,6);
+
+    std::cout << "Graph 1: " << std::endl;
     g -> printGraph();  
-    // std::cout <<lowerBoundCost(g->getAdj(), g->getV())<<std::endl;
-    // auto path = generic_path_to_pair_points({2,0,4});
+    std::cout <<std::endl;
+    std::cout << "The unconstrained lower bound is "<<lowerBoundCost(g->getAdj(), g->getV())<<std::endl;
+    std::cout <<std::endl;
+    auto path = generic_path_to_pair_points({2,0,4});
     // printpath(path);
     // g -> printGraph();  
-    // std::cout <<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
+    std::cout <<"The lower bound with {(2,0),(0,4)} is "<<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
+    std::cout <<std::endl;
     // path = {{2,0},{0,4}};
     // g -> printGraph();  
     // std::cout <<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
 
     TSP(g->getAdj(), g->getV());
+    std::cout <<std::endl;
 
 
     delete g;
-
+    std::cout <<std::endl;
+    std::cout <<"------------------------------------------------"<<std::endl;
 
     Graph *t = new Graph(4);
     t -> addEdge(0,1,10);
@@ -298,8 +302,11 @@ int main(){
     t -> addEdge(1,2,35);
     t -> addEdge(1,3,25);
     t -> addEdge(2,3,30);
+    std::cout << "Graph 2: " << std::endl;
     t -> printGraph();
+    std::cout <<std::endl;
     TSP(t->getAdj(), t->getV());
+    std::cout <<std::endl;
     delete t;
 
 
