@@ -53,7 +53,6 @@ Graph::~Graph(){
     delete [] adj;
     std::cout << "Graph deleted" << std::endl;
 }
-
 class Path
 {
 private:
@@ -78,31 +77,6 @@ public:
         return path;
     }
 };
-// class WorkingPath{
-//     private:
-//         std::vector<int> path;
-//         float lowerBoundCost;
-//     public:
-//         WorkingPath(std::vector<int> p, float c){
-//             path = p;
-//             cost = c;
-//         }
-//         ~WorkingPath();
-//         void printPath(){
-//             for(int i=0; i<path.size(); i++){
-//                 std::cout << path[i] << " ";
-//             }
-//             std::cout << std::endl;
-//         }
-//         float getCost(){
-//             return cost;
-//         }
-//         std::vector<int> getPath(){
-//             return path;
-//         }
-// };
-
-
 void printpath(std::vector<std::pair<int , int>>path){
     for (int i = 0; i < path.size(); i++)
     {
@@ -140,7 +114,6 @@ void printlevel_by_level_lower_bounds(std::vector<std::vector<std::pair < std::v
     }
     
 }
-
 
 float lowerBoundCost(float **adj, int V, std::vector<std::pair<int , int>>path= {}){
     float cost = 0;
@@ -234,8 +207,6 @@ float pathCost(float **adj, int V, std::vector<std::pair<int , int>>path){
     cost += adj[path[path.size()-1].second][path[0].first];
     return cost;
 }
-
-
 void TSPRecursion(int V, float **adj, float Lower_Bound, int level, std::vector<int> current_path , std::vector<int> *best_path, float *best_cost, std::vector<bool> visited){
     if(level == V){
         if(adj[current_path[level-1]][current_path[0]] != std::numeric_limits<float>::infinity()){
@@ -265,9 +236,7 @@ void TSPRecursion(int V, float **adj, float Lower_Bound, int level, std::vector<
         }
     }
 }
-
-
-Path *TSP(float **adj, int V){  
+void TSP(float **adj, int V){  
 
     std::vector<int> current_path;
     std::vector<int> best_path;
@@ -279,12 +248,17 @@ Path *TSP(float **adj, int V){
 
     std::vector<std::pair<int, int>> pair_points = generic_path_to_pair_points(current_path);
     Lower_Bound= lowerBoundCost(adj, V, pair_points);
-    std::cout << "Lower_Bound: " << Lower_Bound << std::endl;
-    std::cout << "best_cost: " << best_cost << std::endl;
 
     TSPRecursion(V ,adj, Lower_Bound, 1, current_path , &best_path, &best_cost, visited);
 
-    return new Path(best_path, best_cost);
+    // return new Path(best_path, best_cost);
+    std::cout << "best_cost: " << best_cost << std::endl;
+    std::cout << "best_path: " << std::endl;
+    for (int i = 0; i < best_path.size(); i++)
+    {
+        std::cout << best_path[i] << " ";
+    }
+    std::cout << std::endl;
 
 }
 
@@ -302,20 +276,33 @@ int main(){
     g -> addEdge(2,4,8);
     g -> addEdge(3,4,6);
     g -> printGraph();  
-    std::cout <<lowerBoundCost(g->getAdj(), g->getV())<<std::endl;
-    auto path = generic_path_to_pair_points({2,0,4});
-    printpath(path);
-    g -> printGraph();  
-    std::cout <<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
-    path = {{2,0},{0,4}};
-    g -> printGraph();  
-    std::cout <<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
+    // std::cout <<lowerBoundCost(g->getAdj(), g->getV())<<std::endl;
+    // auto path = generic_path_to_pair_points({2,0,4});
+    // printpath(path);
+    // g -> printGraph();  
+    // std::cout <<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
+    // path = {{2,0},{0,4}};
+    // g -> printGraph();  
+    // std::cout <<lowerBoundCost(g->getAdj(), g->getV(), path)<<std::endl;
 
-    Path *p = TSP(g->getAdj(), g->getV());
-    p->printPath();
-    std::cout << p->getCost() << std::endl;
-    
+    TSP(g->getAdj(), g->getV());
+
 
     delete g;
+
+
+    Graph *t = new Graph(4);
+    t -> addEdge(0,1,10);
+    t -> addEdge(0,2,15);
+    t -> addEdge(0,3,20);
+    t -> addEdge(1,2,35);
+    t -> addEdge(1,3,25);
+    t -> addEdge(2,3,30);
+    t -> printGraph();
+    TSP(t->getAdj(), t->getV());
+    delete t;
+
+
+
     return 0;
 }
